@@ -15,7 +15,7 @@ import javafx.scene.text.Text
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.tan
-
+//класс для визуализации графа(множество ребер и множество вершин)
 class GraphVizualisation(scene_size : Double, graph: Graph) {
     var vertexes = mutableListOf<VertexVizualisation>()
     val radius = (3.0/8.0) * scene_size
@@ -29,7 +29,6 @@ class GraphVizualisation(scene_size : Double, graph: Graph) {
             val alpha = alpha0 * i
             previous_x += radius* cos(alpha)
             previous_y -= radius* sin(alpha)
-            println (alpha)
             vertexes.add(VertexVizualisation(scene_size,previous_x,previous_y,i + 1))
         }
         for (i in 0 until graph.data.size){
@@ -37,10 +36,8 @@ class GraphVizualisation(scene_size : Double, graph: Graph) {
             for (j in 0 until i){
                 if (graph.data[i][j]!= Int.MAX_VALUE){
                     edges[i].add(Edge(vertexes[i],vertexes[j],graph.data[i][j]))
-                    print("${graph.data[i][j]} ")
                 }
             }
-            println()
         }
         for (vertex in vertexes){
             full_graph.children.add(vertex.data)
@@ -49,8 +46,6 @@ class GraphVizualisation(scene_size : Double, graph: Graph) {
             for (edge in edge_array)
                 full_graph.children.add(edge.edgegroup)
         }
-        // все, граф со всеми связями построен
-        // вершины располагаются по кругу с одинаковыми отступами
-        // full_graph представляет собой группу, в которой содержатся группы всех вершин(круг и имя вершины) и ребер(линия и вес ребра)
+
     }
 }

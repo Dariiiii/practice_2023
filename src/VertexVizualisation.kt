@@ -13,7 +13,7 @@ import javafx.scene.shape.Line
 import javafx.scene.shape.Shape
 import javafx.scene.text.Font
 import javafx.scene.text.Text
-
+// класс для визуализации вершины, состоящей из круга и имени(символ латинского алфавита)pr
 class VertexVizualisation(scene_size : Double, x : Double, y : Double, val number: Int) : Shape(){
     var name: Text
     var circle: Circle
@@ -30,9 +30,7 @@ class VertexVizualisation(scene_size : Double, x : Double, y : Double, val numbe
             sb.append(('A'.code + remainder).toChar())
             quotient /= base
         }
-        println(number)
         val text = Text("${sb.reverse()}")
-        println(text.text)
         text.font = Font.font("Arial",20.0)
         this.name = text
         circle.stroke = Color.BLACK

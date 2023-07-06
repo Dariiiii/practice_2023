@@ -14,7 +14,7 @@ import javafx.scene.shape.Line
 import javafx.scene.shape.Shape
 import javafx.scene.text.Font
 import javafx.scene.text.Text
-
+// класс для визуализации ребра(линия и подпись веса)
 class Edge(Vertex1 : VertexVizualisation, Vertex2: VertexVizualisation,val weight : Int) : Shape(){
     var line : Line
     var edgegroup : Group

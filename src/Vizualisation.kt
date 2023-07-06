@@ -13,10 +13,10 @@ import java.io.File
 
 class Vizualisation : Application(){
     lateinit var graph_visual: GraphVizualisation
+    // начальный метод, в котором создаются кнопки, окно приложения и выбирается формат ввода данных
     override fun start(stage: Stage) {
-        var graph = Graph()
+        val graph = Graph()
         val file = File("Graph1.txt")
-        println("Как вы хотите ввести граф : 1 - из файла(матрица смежности), 2 - из консоли(матрица смежности), в режиме реального времени самому нарисовать граф")
         stage.title = "Визуализация алгоритма Прима"
         stage.width = 800.0
         stage.height = 600.0
@@ -34,7 +34,6 @@ class Vizualisation : Application(){
         final.setOnAction { algorithm_vizualisation(stage,graph, graph_visual) }
         val first_step = Button("move to start")
         first_step.setOnAction { println("back") }
-        val variant = scan.nextInt()
         val movements = HBox(previous_step,next_step)
         val big_movements = HBox(first_step,final)
         val operations = HBox(new_edge,new_vertex,delete)
@@ -45,6 +44,8 @@ class Vizualisation : Application(){
         val all_buttons = BorderPane()
         all_buttons.top = operations
         all_buttons.bottom = all_movements
+        println("Как вы хотите ввести граф : 1 - из файла(матрица смежности), 2 - из консоли(матрица смежности), в режиме реального времени самому нарисовать граф")
+        val variant = scan.nextInt()
         when (variant){
             1 -> {
                 graph.read_from_file(file)
@@ -77,6 +78,7 @@ class Vizualisation : Application(){
     fun delete_element(stage: Stage, graph: Graph){
         println("штучка удаляется создается")
     }
+    // метод для отображения результатов алгоритма
     fun algorithm_vizualisation(stage: Stage, graph: Graph,graph_visual : GraphVizualisation){
         val result = graph.PrimAlgorithm()
         for (edge_list in graph_visual.edges) {
@@ -87,12 +89,12 @@ class Vizualisation : Application(){
             }
         }
     }
-
+// метод для проверки местоположения курсора внутри круга
     fun isInsideCircle(x: Double, y: Double, circle: Circle): Boolean {
         val distance = Math.sqrt(Math.pow(x - circle.centerX, 2.0) + Math.pow(y - circle.centerY, 2.0))
         return distance <= circle.radius
     }
-
+// метод для обработки каких-либо действий пользователя, не относящихся к нажатию кнопок
     fun action(stage: Stage, graph: Graph,graph_visual : GraphVizualisation) {
         val deltaX = DoubleArray(graph_visual.vertexes.size)
         val deltaY = DoubleArray(graph_visual.vertexes.size)
@@ -134,12 +136,11 @@ class Vizualisation : Application(){
             }
         }
     }
-
+// создание графа из уже заданной матрицы из файла или из консоли
     fun draw_graph(stage: Stage,graph: Graph, buttons : BorderPane){
-        println(graph)
         graph_visual = GraphVizualisation(stage.height,graph)
         val full_group = Group(graph_visual.full_graph, buttons)
-        var scene = Scene(full_group,800.0,600.0)
+        val scene = Scene(full_group,800.0,600.0)
         stage.setScene(scene)
         action(stage, graph,graph_visual)
     }
