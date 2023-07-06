@@ -35,8 +35,8 @@ class VertexVizualisation(scene_size : Double, x : Double, y : Double, val numbe
         this.name = text
         circle.stroke = Color.BLACK
         text.fill = Color.BLACK
-        text.x = circle.centerX
-        text.y = circle.centerY - text.layoutBounds.height / 2.0
+        text.x = circle.centerX - text.layoutBounds.width / 2.0
+        text.y = circle.centerY + text.layoutBounds.height / 4.0
         data = Group(circle,text)
 
     }

@@ -16,7 +16,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.tan
 //класс для визуализации графа(множество ребер и множество вершин)
-class GraphVizualisation(scene_size : Double, graph: Graph) {
+class GraphVizualisation(scene_size : Double,val graph: Graph) {
     var vertexes = mutableListOf<VertexVizualisation>()
     val radius = (3.0/8.0) * scene_size
     var edges = mutableListOf<MutableList<Edge>>()
@@ -39,13 +39,13 @@ class GraphVizualisation(scene_size : Double, graph: Graph) {
                 }
             }
         }
-        for (vertex in vertexes){
-            full_graph.children.add(vertex.data)
-        }
+
         for (edge_array in edges){
             for (edge in edge_array)
                 full_graph.children.add(edge.edgegroup)
         }
-
+        for (vertex in vertexes){
+            full_graph.children.add(vertex.data)
+        }
     }
 }

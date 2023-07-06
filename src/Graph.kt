@@ -47,24 +47,27 @@ open class Graph() {
         }
     }
 // реализация алгоритма Прима для графа, возвращает массив пар, соответствующих началу и концу ребра
-    fun PrimAlgorithm() : Array<Pair<Int,Int>>{
-        var result_edges : Array<Pair<Int,Int>> = arrayOf()
-        var added_vertexes : Array<Int> = arrayOf()
-        added_vertexes = added_vertexes.plusElement(0)
+    fun PrimAlgorithm() : MutableList<Pair<Int, Int>> {
+        var result_edges : MutableList<Pair<Int,Int>> = mutableListOf()
+        var added_vertexes : MutableList<Int> = mutableListOf()
+        added_vertexes.add(0)
         while (added_vertexes.size < data.size){
-            var min = Int.MAX_VALUE
-            var min_edge : Pair<Int,Int> = (0 to 0)
-            for (i in 0 until added_vertexes.size){
-                for (j in 0 until data[added_vertexes[i]].size){
-                        if (data[added_vertexes[i]][j] < min && !(j in added_vertexes)){
-                            min = data[added_vertexes[i]][j]
-                            min_edge = Pair(added_vertexes[i], j)
-                        }
-                }
-            }
-            added_vertexes = added_vertexes.plusElement(min_edge.second)
-            result_edges = result_edges.plusElement(min_edge)
+            iterated_PrimAlgorithm(result_edges,added_vertexes)
         }
         return result_edges
+    }
+    fun iterated_PrimAlgorithm(result_edges : MutableList<Pair<Int,Int>>, added_vertexes : MutableList<Int>){
+        var min = Int.MAX_VALUE
+        var new_edge = 0 to 0
+        for (i in 0 until added_vertexes.size){
+            for (j in 0 until data[added_vertexes[i]].size){
+                if (data[added_vertexes[i]][j] < min && !(j in added_vertexes)){
+                    min = data[added_vertexes[i]][j]
+                    new_edge = Pair(added_vertexes[i], j)
+                }
+            }
+        }
+        added_vertexes.add(new_edge.second)
+        result_edges.add(new_edge)
     }
 }
