@@ -37,8 +37,10 @@ class GraphVizualisation(scene_size : Double, graph: Graph) {
             for (j in 0 until i){
                 if (graph.data[i][j]!= Int.MAX_VALUE){
                     edges[i].add(Edge(vertexes[i],vertexes[j],graph.data[i][j]))
+                    print("${graph.data[i][j]} ")
                 }
             }
+            println()
         }
         for (vertex in vertexes){
             full_graph.children.add(vertex.data)
@@ -50,8 +52,5 @@ class GraphVizualisation(scene_size : Double, graph: Graph) {
         // все, граф со всеми связями построен
         // вершины располагаются по кругу с одинаковыми отступами
         // full_graph представляет собой группу, в которой содержатся группы всех вершин(круг и имя вершины) и ребер(линия и вес ребра)
-    }
-    fun move_vertexes(){
-
     }
 }

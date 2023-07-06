@@ -46,7 +46,7 @@ open class Graph() {
         }
     }
 
-    fun PrimAlgorithm(){
+    fun PrimAlgorithm() : Array<Pair<Int,Int>>{
         var result_edges : Array<Pair<Int,Int>> = arrayOf()
         var added_vertexes : Array<Int> = arrayOf()
         added_vertexes = added_vertexes.plusElement(0)
@@ -64,8 +64,6 @@ open class Graph() {
             added_vertexes = added_vertexes.plusElement(min_edge.second)
             result_edges = result_edges.plusElement(min_edge)
         }
-        result_edges.forEach {
-            println(it)
-        }
+        return result_edges
     }
 }
