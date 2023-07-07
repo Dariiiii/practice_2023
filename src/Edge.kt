@@ -33,7 +33,7 @@ class Edge(Vertex1 : VertexVizualisation, Vertex2: VertexVizualisation,val weigh
         line.startYProperty().bind(Vertex1.circle.centerYProperty())
         line.endXProperty().bind(Vertex2.circle.centerXProperty())
         line.endYProperty().bind(Vertex2.circle.centerYProperty())
-        line_label.textFill = Color.DARKBLUE
+        line_label.textFill = Color.BLACK
         line_label.layoutX = (line.startX.toDouble() + line.endX.toDouble()) / 2.0 //- line_label.width.toDouble() / 2.0
         line_label.layoutY =(line.startY.toDouble() + line.endY.toDouble()) / 2.0// - line_label.height.toDouble() / 2.0
         // Привязываем конец линии к окружности circle2

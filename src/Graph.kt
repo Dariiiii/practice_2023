@@ -81,7 +81,7 @@ open class Graph() {
         for (i in 0 until added_vertexes.size) {
             for (j in i until data[added_vertexes[i]].size) {
                 if (j !in added_vertexes) {
-                    edges_considered_at_the_step.add(Pair(added_vertexes[i], j))
+                    if (data[added_vertexes[i]][j] < Int.MAX_VALUE) edges_considered_at_the_step.add(Pair(added_vertexes[i], j))
                     if (data[added_vertexes[i]][j] < min) {
                         min = data[added_vertexes[i]][j]
                         new_edge = Pair(added_vertexes[i], j)

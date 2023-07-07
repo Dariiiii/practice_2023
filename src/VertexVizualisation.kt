@@ -33,6 +33,7 @@ class VertexVizualisation(scene_size : Double, x : Double, y : Double, val numbe
         val text = Text("${sb.reverse()}")
         text.font = Font.font("Arial",20.0)
         this.name = text
+        circle.strokeWidth = 3.0
         circle.stroke = Color.BLACK
         text.fill = Color.BLACK
         text.x = circle.centerX - text.layoutBounds.width / 2.0
