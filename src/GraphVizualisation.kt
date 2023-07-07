@@ -53,6 +53,11 @@ class GraphVizualisation(scene_size: Double, val graph: Graph) {
         }
     }
 
+    fun set_get_step(step: Int) : Int{
+        this.step = step
+        return this.step
+    }
+
     fun next_step(): Int {
         if (step < graph.data.size - 1) step += 1
         else step = graph.data.size - 1
@@ -60,8 +65,8 @@ class GraphVizualisation(scene_size: Double, val graph: Graph) {
     }
 
     fun previous_step(): Int {
-        if (step > 0) step -= 1
-        else step = 0
+        if (step > -1) step -= 1
+        else step = -1
         return step
     }
 }

@@ -54,7 +54,7 @@ open class Graph() {
     }
 
     // реализация алгоритма Прима для графа, возвращает массив пар, соответствующих началу и концу ребра
-    fun PrimAlgorithm(): Pair<MutableList<Pair<Int, Int>>, MutableList<MutableList<Pair<Int, Int>>>> {
+    fun PrimAlgorithm(): Pair<Pair<MutableList<Pair<Int, Int>>, MutableList<MutableList<Pair<Int, Int>>>>, MutableList<Int>> {
         val edges_considered_at_the_step: MutableList<MutableList<Pair<Int, Int>>> = mutableListOf()
         val result_edges: MutableList<Pair<Int, Int>> = mutableListOf()
         val added_vertexes: MutableList<Int> = mutableListOf()
@@ -68,7 +68,7 @@ open class Graph() {
         }
         edges_considered_at_the_step.add(mutableListOf())
 //        println(edges_considered_at_the_step)
-        return Pair(result_edges, edges_considered_at_the_step)
+        return Pair(Pair(result_edges, edges_considered_at_the_step), added_vertexes)
     }
 
     fun iterated_PrimAlgorithm(

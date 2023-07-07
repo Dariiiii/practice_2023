@@ -11,7 +11,7 @@ import javafx.scene.input.MouseButton
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
-import javafx.stage.Stage//
+import javafx.stage.Stage
 import java.io.File
 
 class Vizualisation : Application() {
@@ -39,7 +39,7 @@ class Vizualisation : Application() {
         val previous_step = Button("previous step")
         previous_step.setOnAction { step_by_step_algorythm(graph_visual.previous_step()) }
         val final = Button("move to result")
-        final.setOnAction { algorithm_vizualisation() }
+        final.setOnAction { step_by_step_algorythm(graph_visual.set_get_step(graph_visual.graph.data.size - 1)) }
         val first_step = Button("move to start")
 
         //HBox - размещение элементов в горизонтальной линии
@@ -50,9 +50,6 @@ class Vizualisation : Application() {
         operations.spacing = 10.0
         movements.spacing = 10.0
         first_step.setOnAction { draw_graph(stage, graph, operations, movements) }
-
-
-
         println("Как вы хотите ввести граф : 1 - из файла(матрица смежности), 2 - из консоли(матрица смежности), 3 - в режиме реального времени самому нарисовать граф")
         val variant = scan.nextInt()
         when (variant) {
@@ -72,17 +69,18 @@ class Vizualisation : Application() {
             }
         }
         //установка местоположения кнопок
-        Platform.runLater {
-            val width1 = operations.width
-            val height1 = operations.height
-            val width2 = movements.width
-            val height2 = movements.height
-            operations.layoutX = stage.width / 2.0 - width1 / 2.0
-            operations.layoutY = 5.0
-            movements.layoutX = stage.width / 2.0 - width2 / 2.0
-            movements.layoutY = stage.height - 3.0 * height2
+        if(operations.width == 0.0) {
+            Platform.runLater {
+                val width1 = operations.width
+                val height1 = operations.height
+                val width2 = movements.width
+                val height2 = movements.height
+                operations.layoutX = stage.width / 2.0 - width1 / 2.0
+                operations.layoutY = 5.0
+                movements.layoutX = stage.width / 2.0 - width2 / 2.0
+                movements.layoutY = stage.height - 3.0 * height2
+            }
         }
-
         stage.show()
     }
 
@@ -103,42 +101,32 @@ class Vizualisation : Application() {
     }
 
     fun step_by_step_algorythm(step: Int) {
-        val result_edges = graph_visual.graph.PrimAlgorithm().first
-        val edges_considered_at_the_step = graph_visual.graph.PrimAlgorithm().second
+        val step_data = graph_visual.graph.PrimAlgorithm()
+        val result_edges = step_data.first.first
+        val edges_considered_at_the_step = step_data.first.second
+        val considered_vertexes = step_data.second
 //        println(step)
         for (edge_list in graph_visual.edges) {
             for (edge in edge_list) {
                 edge.line.stroke = Color.DARKGRAY
-                if (Pair(edge.position_1, edge.position_2) in result_edges.subList(0, step+1) || Pair(
-                        edge.position_2, edge.position_1
-                    ) in result_edges.subList(0, step+1)
-                ) {
-                    edge.line.stroke = Color.RED
-                } else if (Pair(edge.position_1, edge.position_2) in edges_considered_at_the_step[step] || Pair(
-                        edge.position_2, edge.position_1
-                    ) in edges_considered_at_the_step[step]
-                ) {
-                    edge.line.stroke = Color.BLUE
+                if(step != - 1) {
+                    if (Pair(edge.position_1, edge.position_2) in result_edges.subList(0, step + 1) || Pair(
+                            edge.position_2, edge.position_1
+                        ) in result_edges.subList(0, step + 1)
+                    ) {
+                        edge.line.stroke = Color.RED
+                    } else if (Pair(edge.position_1, edge.position_2) in edges_considered_at_the_step[step] || Pair(
+                            edge.position_2, edge.position_1
+                        ) in edges_considered_at_the_step[step]
+                    ) {
+                        edge.line.stroke = Color.YELLOW
+                    }
                 }
-
             }
         }
-    }
-
-
-    // метод для отображения результатов алгоритма
-    fun algorithm_vizualisation() {
-        val result_edges = graph_visual.graph.PrimAlgorithm().first
-        for (edge_list in graph_visual.edges) {
-            for (edge in edge_list) {
-                if (Pair(edge.position_1, edge.position_2) in result_edges || Pair(
-                        edge.position_2,
-                        edge.position_1
-                    ) in result_edges
-                ) {
-                    edge.line.stroke = Color.RED
-                }
-            }
+        for (vertex in graph_visual.vertexes) vertex.circle.stroke = Color.BLACK
+        for (i in 0 until step + 1){
+            graph_visual.vertexes[i].circle.stroke = Color.RED
         }
     }
 
@@ -198,7 +186,6 @@ class Vizualisation : Application() {
         full_group = Group(graph_visual.full_graph, buttons1, buttons2)
         val scene = Scene(full_group, 800.0, 600.0)
         stage.setScene(scene)
-
         action(stage)
     }
 
