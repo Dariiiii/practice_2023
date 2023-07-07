@@ -1,4 +1,5 @@
 package org.jetbrains.kotlin.Math
+
 import javafx.application.Application
 import javafx.geometry.Insets
 import javafx.scene.Group
@@ -15,37 +16,52 @@ import javafx.scene.text.Text
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.tan
+
 //класс для визуализации графа(множество ребер и множество вершин)
-class GraphVizualisation(scene_size : Double,val graph: Graph) {
+class GraphVizualisation(scene_size: Double, val graph: Graph) {
     var vertexes = mutableListOf<VertexVizualisation>()
-    val radius = (3.0/8.0) * scene_size
+    val radius = (3.0 / 8.0) * scene_size
     var edges = mutableListOf<MutableList<Edge>>()
     var full_graph = Group()
+    var step = -1
+
     init {
-        var previous_y = (3.0/4.0) * scene_size
+        var previous_y = (3.0 / 4.0) * scene_size
         var previous_x = scene_size / 2.0
         val alpha0 = 2.0 * Math.PI / graph.data.size.toDouble()
-        for (i in 0 until graph.data.size){
+        for (i in 0 until graph.data.size) {
             val alpha = alpha0 * i
-            previous_x += radius* cos(alpha)
-            previous_y -= radius* sin(alpha)
-            vertexes.add(VertexVizualisation(scene_size,previous_x,previous_y,i + 1))
+            previous_x += radius * cos(alpha)
+            previous_y -= radius * sin(alpha)
+            vertexes.add(VertexVizualisation(scene_size, previous_x, previous_y, i + 1))
         }
-        for (i in 0 until graph.data.size){
+        for (i in 0 until graph.data.size) {
             edges.add(mutableListOf<Edge>())
-            for (j in 0 until i){
-                if (graph.data[i][j]!= Int.MAX_VALUE){
-                    edges[i].add(Edge(vertexes[i],vertexes[j],graph.data[i][j]))
+            for (j in 0 until i) {
+                if (graph.data[i][j] != Int.MAX_VALUE) {
+                    edges[i].add(Edge(vertexes[i], vertexes[j], graph.data[i][j]))
                 }
             }
         }
 
-        for (edge_array in edges){
+        for (edge_array in edges) {
             for (edge in edge_array)
                 full_graph.children.add(edge.edgegroup)
         }
-        for (vertex in vertexes){
+        for (vertex in vertexes) {
             full_graph.children.add(vertex.data)
         }
+    }
+
+    fun next_step(): Int {
+        if (step < graph.data.size - 1) step += 1
+        else step = graph.data.size - 1
+        return step
+    }
+
+    fun previous_step(): Int {
+        if (step > 0) step -= 1
+        else step = 0
+        return step
     }
 }
