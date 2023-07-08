@@ -1,21 +1,8 @@
 package org.jetbrains.kotlin.Math
 
-import javafx.application.Application
-import javafx.geometry.Insets
 import javafx.scene.Group
-import javafx.scene.Scene
-import javafx.scene.control.Button
-import javafx.scene.layout.HBox
-import javafx.scene.layout.Pane
-import javafx.scene.layout.VBox
-import javafx.scene.paint.Color
-import javafx.scene.shape.Circle
-import javafx.scene.shape.Line
-import javafx.scene.text.Font
-import javafx.scene.text.Text
 import kotlin.math.cos
 import kotlin.math.sin
-import kotlin.math.tan
 
 //класс для визуализации графа(множество ребер и множество вершин)
 class GraphVizualisation(scene_size: Double, val graph: Graph) {
@@ -33,7 +20,7 @@ class GraphVizualisation(scene_size: Double, val graph: Graph) {
             val alpha = alpha0 * i
             previous_x += radius * cos(alpha)
             previous_y -= radius * sin(alpha)
-            vertexes.add(VertexVizualisation(scene_size, previous_x, previous_y, i + 1))
+            vertexes.add(VertexVizualisation(scene_size, previous_x, previous_y, graph.name_vertex[i], i + 1))
         }
         for (i in 0 until graph.data.size) {
             edges.add(mutableListOf<Edge>())
@@ -53,7 +40,7 @@ class GraphVizualisation(scene_size: Double, val graph: Graph) {
         }
     }
 
-    fun set_get_step(step: Int) : Int{
+    fun set_get_step(step: Int): Int {
         this.step = step
         return this.step
     }

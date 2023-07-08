@@ -1,29 +1,28 @@
 package org.jetbrains.kotlin.Math
 
-import javafx.application.Application//
+import javafx.application.Application
 import javafx.application.Platform
-import javafx.geometry.Pos
 import javafx.scene.Group
 import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.control.Label
-import javafx.scene.image.Image
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import javafx.stage.Stage
-import java.io.File
 
 class Vizualisation : Application() {
     lateinit var graph_visual: GraphVizualisation
     lateinit var full_group: Group
-    lateinit var step_information : Label
+    lateinit var step_information: Label
+
     // начальный метод, в котором создаются кнопки, окно приложения и выбирается формат ввода данных
     override fun start(stage: Stage) {//окно
 
         val graph = Graph()
-        val file = File("Graph1.txt")//создание файла
+        val filename = "Graph1.txt"
+//        val file = File("Graph1.txt")//создание файла
         stage.title = "Визуализация алгоритма Прима"//заголовок окна
         stage.width = 1000.0//высота окна
         stage.height = 800.0//ширина
@@ -36,11 +35,11 @@ class Vizualisation : Application() {
         val delete = Button("delete element")
         delete.setOnAction { delete_element(stage, graph) }
         val next_step = Button("next step")
-        next_step.setOnAction { step_by_step_algorythm(stage,graph_visual.next_step()) }
+        next_step.setOnAction { step_by_step_algorythm(stage, graph_visual.next_step()) }
         val previous_step = Button("previous step")
-        previous_step.setOnAction { step_by_step_algorythm(stage,graph_visual.previous_step()) }
+        previous_step.setOnAction { step_by_step_algorythm(stage, graph_visual.previous_step()) }
         val final = Button("move to result")
-        final.setOnAction { step_by_step_algorythm(stage,graph_visual.set_get_step(graph_visual.graph.data.size - 1)) }
+        final.setOnAction { step_by_step_algorythm(stage, graph_visual.set_get_step(graph_visual.graph.data.size - 1)) }
         val first_step = Button("move to start")
         //HBox - размещение элементов в горизонтальной линии
         //Spacing в контексте HBox относится к расстоянию между элементами внутри контейнера.
@@ -51,16 +50,19 @@ class Vizualisation : Application() {
         movements.spacing = 10.0
         first_step.setOnAction { draw_graph(stage, graph, operations, movements) }
 
-        println("Как вы хотите ввести граф : 1 - из файла(матрица смежности), 2 - из консоли(матрица смежности), 3 - в режиме реального времени самому нарисовать граф")
+        println("Как вы хотите ввести граф : \"1\" - из файла(матрица смежности), \"2\" - из консоли(матрица смежности), \"3\" - в режиме реального времени самому нарисовать граф.")
         val variant = scan.nextInt()
         when (variant) {
             1 -> {
-                graph.read_from_file(file)
+//                println("Первая строка файла содержит имена вершин, далее находится матрица смежности. ")
+                println("Матрица смежности должна быть представлена в формате : симметричная матрица с \"-1\" на главной диагонали, где \"-1\" означает отсутствие ребра между двумя вершинами.")
+                graph.read_from_file(filename)
                 //окно, граф, функции, перемещение
                 draw_graph(stage, graph, operations, movements)
             }
 
             2 -> {
+                println("Матрица смежности должна быть представлена в формате : симметричная матрица с \"-1\" на главной диагонали, где \"-1\" означает отсутствие ребра между двумя вершинами.")
                 graph.read_from_console()
                 draw_graph(stage, graph, operations, movements)
             }
@@ -70,7 +72,7 @@ class Vizualisation : Application() {
             }
         }
         //установка местоположения кнопок
-        if(operations.width == 0.0) {
+        if (operations.width == 0.0) {
             Platform.runLater {
                 val width1 = operations.width
                 val height1 = operations.height
@@ -102,7 +104,7 @@ class Vizualisation : Application() {
         println("штучка удаляется")
     }
 
-    fun step_by_step_algorythm(stage: Stage,step: Int) {
+    fun step_by_step_algorythm(stage: Stage, step: Int) {
         val step_data = graph_visual.graph.PrimAlgorithm()
         val result_edges = step_data.first.first
         val edges_considered_at_the_step = step_data.first.second
@@ -110,7 +112,7 @@ class Vizualisation : Application() {
         for (edge_list in graph_visual.edges) {
             for (edge in edge_list) {
                 edge.line.stroke = Color.DARKGRAY
-                if(step != - 1) {
+                if (step != -1) {
                     if (Pair(edge.position_1, edge.position_2) in result_edges.subList(0, step + 1) || Pair(
                             edge.position_2, edge.position_1
                         ) in result_edges.subList(0, step + 1)
@@ -127,28 +129,30 @@ class Vizualisation : Application() {
         }
 
         for (vertex in graph_visual.vertexes) vertex.circle.stroke = Color.BLACK
-
-        for (i in 0 until step + 1){
-            graph_visual.vertexes[i].circle.stroke = Color.RED
+        if (step == -1) graph_visual.vertexes[graph_visual.graph.start_vertex].circle.stroke = Color.RED
+        for (i in 0 until step + 1) {
+            graph_visual.vertexes[considered_vertexes[i]].circle.stroke = Color.RED
         }
-        update_step_information(stage,step,considered_vertexes,edges_considered_at_the_step)
+        update_step_information(stage, step, considered_vertexes, edges_considered_at_the_step)
     }
 
-    fun update_step_information(stage: Stage,step: Int,considered_vertexes : MutableList<Int>,added_edges : MutableList<MutableList<Pair<Int, Int>>>){
+    fun update_step_information(stage: Stage, step: Int, considered_vertexes: MutableList<Int>,
+        added_edges: MutableList<MutableList<Pair<Int, Int>>>, ) {
         var weights = ""
 //        println(graph_visual.graph.data[added_edges[0][step].first][added_edges[0][step].second].toString())
-        if (step >=0) {
+        if (step >= 0) {
             for (edge in added_edges[step])
                 weights += " ${graph_visual.graph.data[edge.first][edge.second]}"
         }
-        if (step<graph_visual.graph.data.size - 1 && step > 0){
+        if (step < graph_visual.graph.data.size - 1 && step > 0) {
             step_information.text =
-                "На шаге $step была добавлена вершина ${graph_visual.vertexes[considered_vertexes[step]].name.text}. Ребра, рассматриваемые на данном шаге, имеют веса $weights"
-        }
-        else if( step ==0)
-            step_information.text = "Вершина  ${graph_visual.vertexes[considered_vertexes[0]].name.text} была выбрана в качестве начальной. Ребра, рассматриваемые на данном шаге, имеют веса $weights"
-        else if (step == graph_visual.graph.data.size - 1) step_information.text ="На шаге $step была добавлена вершина ${graph_visual.vertexes[considered_vertexes.last()].name.text}. Построение минимального остовного дерева окончено"
-        else step_information.text = "Здесь будет отображена информация"
+                "На шаге №$step была добавлена вершина \"${graph_visual.vertexes[considered_vertexes[step]].name.text}\". Ребра, рассматриваемые на данном шаге, имеют веса $weights"
+        } else if (step == 0)
+            step_information.text =
+                "Вершина  \"${graph_visual.vertexes[considered_vertexes[0]].name.text}\" была выбрана в качестве начальной. Ребра, рассматриваемые на данном шаге, имеют веса $weights"
+        else if (step == graph_visual.graph.data.size - 1) step_information.text =
+            "На шаге №$step была добавлена вершина \"${graph_visual.vertexes[considered_vertexes.last()].name.text}\". Построение минимального остовного дерева окончено"
+        else step_information.text = "Чтобы выбрать выбрать новую начальную вершину нажмите на нее дважды."
     }
 
     // метод для проверки местоположения курсора внутри круга
@@ -159,7 +163,17 @@ class Vizualisation : Application() {
 
     // метод для обработки каких-либо действий пользователя, не относящихся к нажатию кнопок
     fun action(stage: Stage) {
-
+        stage.scene.setOnMouseClicked { event ->
+            if (event.button == MouseButton.PRIMARY && event.clickCount == 2) {
+                for (i in 0 until graph_visual.vertexes.size) {
+                    graph_visual.vertexes[i].circle.stroke = Color.BLACK
+                    if (isInsideCircle(event.sceneX, event.sceneY, graph_visual.vertexes[i].circle)) {
+                        graph_visual.graph.set_start_vertex(graph_visual.vertexes[i].number-1)
+                        graph_visual.vertexes[graph_visual.graph.start_vertex].circle.stroke = Color.RED
+                    }
+                }
+            }
+        }
         val deltaX = DoubleArray(graph_visual.vertexes.size)
         val deltaY = DoubleArray(graph_visual.vertexes.size)
         stage.scene.setOnMousePressed { event ->
@@ -204,10 +218,10 @@ class Vizualisation : Application() {
     // создание графа из уже заданной матрицы из файла или из консоли
     fun draw_graph(stage: Stage, graph: Graph, buttons1: HBox, buttons2: HBox) {
         graph_visual = GraphVizualisation(stage.height, graph)
-        step_information = Label("Здесь будет отображена информация")
+        step_information = Label("Чтобы выбрать выбрать новую начальную вершину нажмите на нее дважды.")
         step_information.layoutX = 30.0
         step_information.layoutY = stage.height - 100.0
-        full_group = Group(graph_visual.full_graph, buttons1, buttons2,step_information)
+        full_group = Group(graph_visual.full_graph, buttons1, buttons2, step_information)
         val scene = Scene(full_group, 800.0, 600.0)
         stage.setScene(scene)
         action(stage)

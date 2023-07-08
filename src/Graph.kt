@@ -4,26 +4,80 @@ import java.io.File
 import java.util.*
 
 // класс для графа. Граф представлен матрицей смежности, если ребра между вершинами нет, то в соответстсвующей ячейке будет значение Int.MAXVALUE
-open class Graph() {
+open class Graph(var start_vertex: Int = 0) {
     //mutableListOf - представляет собой динамически расширяемый список элементов.
+    var name_vertex: MutableList<String> = mutableListOf()
     var data = mutableListOf<MutableList<Int>>()
+//    var start_vertex: Int = 0
 
     // метод для чтения матрицы из файла
-    fun read_from_file(file: File) {
-        val scanner = Scanner(file)
-        while (scanner.hasNextLine()) {
-            var line = scanner.nextLine()
-            var row = line.split(" ").map { it.toInt() }.toMutableList()
-            data.add(row)
+    fun read_from_file(filename: String) {
+        try {
+            val file = File(filename)
+            val scanner = Scanner(file)
+            println("Если вы желаете задать имена вершин в файле, введите \"1\". Введите \"2\", чтобы имена вершин были заданы автоматически.")
+            val flag = readln().toInt()
+            if (flag == 1) {
+                this.name_vertex = scanner.nextLine().split(" ").toMutableList()
+            }
+            while (scanner.hasNextLine()) {
+                var line = scanner.nextLine()
+                var row = line.split(" ").map { it.toInt() }.toMutableList()
+                data.add(row)
+            }
+            if (flag == 2) {
+                val base = 26
+                var quotient: Int
+                for (i in 0 until data.size) {
+                    quotient = i + 1
+                    val sb = StringBuilder()
+                    while (quotient > 0) {
+                        quotient--
+                        val remainder = quotient % base
+                        sb.append(('A'.code + remainder).toChar())
+                        quotient /= base
+                    }
+                    this.name_vertex.add(sb.reverse().toString())
+                }
+            }
+            modificate()
+
+        } catch (e: Exception) {
+            println("Файл не найден: $filename")
+
         }
-        modificate()
     }
 
     // метод для чтения матрицы из консоли
     fun read_from_console() {
         val scan = Scanner(System.`in`)
-        val size = scan.nextInt()
-        println()
+        println("Сколько вершин должно быть в графе?")
+        val size = readln().toInt()
+        println("Если вы желаете задать имена вершин, введите \"1\". Введите \"2\", чтобы имена вершин были заданы автоматически.")
+        val flag = readln().toInt()
+        when (flag) {
+            1 -> {
+                println("Введите имена вершин через пробел: ")
+                this.name_vertex = scan.nextLine().split(" ").toMutableList()
+            }
+
+            2 -> {
+                val base = 26
+                var quotient: Int
+                for (i in 0 until size) {
+                    quotient = i + 1
+                    val sb = StringBuilder()
+                    while (quotient > 0) {
+                        quotient--
+                        val remainder = quotient % base
+                        sb.append(('A'.code + remainder).toChar())
+                        quotient /= base
+                    }
+                    this.name_vertex.add(sb.reverse().toString())
+                }
+            }
+        }
+        println("Введите матрицу смежности: ")
         for (i in 0 until size) {
             val line = scan.nextLine()
             val row = line.split(" ").map { it.toInt() }.toMutableList()
@@ -53,13 +107,17 @@ open class Graph() {
         }
     }
 
+    fun set_start_vertex(new_start_vertex: Int) {
+        this.start_vertex = new_start_vertex
+    }
+
     // реализация алгоритма Прима для графа, возвращает массив пар, соответствующих началу и концу ребра
     fun PrimAlgorithm(): Pair<Pair<MutableList<Pair<Int, Int>>, MutableList<MutableList<Pair<Int, Int>>>>, MutableList<Int>> {
         val edges_considered_at_the_step: MutableList<MutableList<Pair<Int, Int>>> = mutableListOf()
         val result_edges: MutableList<Pair<Int, Int>> = mutableListOf()
         val added_vertexes: MutableList<Int> = mutableListOf()
-        added_vertexes.add(0)
-        result_edges.add(Pair(0,0))
+        added_vertexes.add(this.start_vertex)
+        result_edges.add(Pair(0, 0))
         var index = 0
         while (added_vertexes.size < data.size) {
             edges_considered_at_the_step.add(mutableListOf())
@@ -67,21 +125,22 @@ open class Graph() {
             index++
         }
         edges_considered_at_the_step.add(mutableListOf())
-//        println(edges_considered_at_the_step)
         return Pair(Pair(result_edges, edges_considered_at_the_step), added_vertexes)
     }
 
-    fun iterated_PrimAlgorithm(
-        result_edges: MutableList<Pair<Int, Int>>,
-        added_vertexes: MutableList<Int>,
-        edges_considered_at_the_step: MutableList<Pair<Int, Int>>,
-    ) {
+    fun iterated_PrimAlgorithm(result_edges: MutableList<Pair<Int, Int>>, added_vertexes: MutableList<Int>,
+        edges_considered_at_the_step: MutableList<Pair<Int, Int>>, ) {
         var min = Int.MAX_VALUE
         var new_edge = 0 to 0
         for (i in 0 until added_vertexes.size) {
             for (j in i until data[added_vertexes[i]].size) {
                 if (j !in added_vertexes) {
-                    if (data[added_vertexes[i]][j] < Int.MAX_VALUE) edges_considered_at_the_step.add(Pair(added_vertexes[i], j))
+                    if (data[added_vertexes[i]][j] < Int.MAX_VALUE) edges_considered_at_the_step.add(
+                        Pair(
+                            added_vertexes[i],
+                            j
+                        )
+                    )
                     if (data[added_vertexes[i]][j] < min) {
                         min = data[added_vertexes[i]][j]
                         new_edge = Pair(added_vertexes[i], j)
