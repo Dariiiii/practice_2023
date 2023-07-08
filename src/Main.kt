@@ -4,7 +4,6 @@ import java.io.File
 
 import javafx.application.Application
 
-
 val scan = java.util.Scanner(System.`in`)
 fun main(){
     val Visual = Vizualisation()
