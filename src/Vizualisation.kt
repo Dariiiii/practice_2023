@@ -26,18 +26,11 @@ class Vizualisation : Application() {
         val first_step = Button("перейти к началу/форматирование графа")
         val final = Button("перейти к результату")
         val next_step = Button("следующий шаг")
-        new_vertex.setOnAction {
-            graph_editor.create_vertex(stage, graph_visual, step_information,final,first_step,previous_step,next_step)
-        }
+        new_vertex.setOnAction { graph_editor.create_vertex(stage, graph_visual, step_information,final,first_step,previous_step,next_step) }
         val new_edge = Button("добавить/изменить ребро")
-        new_edge.setOnAction {
-            graph_editor.create_edge(stage, graph_visual, step_information,final,first_step,previous_step,next_step)
-        }
+        new_edge.setOnAction { graph_editor.create_edge(stage, graph_visual, step_information,final,first_step,previous_step,next_step) }
         val delete = Button("удалить элемент графа")
-
-        delete.setOnAction {
-            graph_editor.delete_element(stage, graph_visual, step_information,final,first_step,previous_step,next_step)
-        }
+        delete.setOnAction { graph_editor.delete_element(stage, graph_visual, step_information,final,first_step,previous_step,next_step) }
         next_step.setOnAction {
             if (graph_visual.get_step() == -1) {
                 new_vertex.isDisable = true
