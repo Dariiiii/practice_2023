@@ -147,7 +147,7 @@ class GraphEditor() {
 
                 clicked_circle = getClickedCircle(event.x,event.y,graph_visual)
                 if (clicked_circle != null) {
-                    graph_visual.delete_vertex(clicked_circle,stage)
+                    graph_visual.delete_vertex(clicked_circle)
 
                 }
                 clicked_line = getClickedLine(event.x,event.y,graph_visual)
