@@ -90,8 +90,7 @@ class GraphVizualisation(scene_size: Double, val graph: Graph) {
             var size = 0
             while (size < edges[i].size) {
                 val edge = edges[i][size]
-                if (edge.get_positions().first == (vertex_to_delete.get_number() - 1)
-                    || edge.get_positions().second == (vertex_to_delete.get_number() - 1)) {
+                if (edge.get_positions().second == (vertex_to_delete.get_number() - 1)) {
                     full_graph.children.remove(edge.group())
                     edges[i].remove(edge)
                 }

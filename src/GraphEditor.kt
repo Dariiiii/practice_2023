@@ -72,7 +72,6 @@ class GraphEditor() {
             var startCircle: VertexVizualisation? = null
             stage.scene.setOnMouseClicked { event ->
                 if (event.button == MouseButton.PRIMARY && graph_visual.graph.data.size >= 2) {
-                    print(1)
                     val clickedCircle = getClickedCircle(event.x, event.y, graph_visual)
                     if (clickedCircle != null) {
                         if (startCircle != null) {
@@ -130,6 +129,7 @@ class GraphEditor() {
         step_information.text = "Чтобы выбрать новую начальную вершину нажмите на нее дважды." +
                 " Редактирование графа доступно только на данном шаге."
     }
+
     fun able_disable_buttons(button1 : Button, button2 : Button, button3 : Button, button4 : Button, action : Boolean){
         button1.isDisable = action
         button2.isDisable = action
