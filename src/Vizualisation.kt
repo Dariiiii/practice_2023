@@ -45,12 +45,21 @@ class Vizualisation : Application() {
             else step_by_step_algorythm(graph_visual.next_step(),new_edge,new_vertex,delete)
         }
         previous_step.setOnAction { step_by_step_algorythm(graph_visual.previous_step(),new_edge,new_vertex,delete) }
-        final.setOnAction { step_by_step_algorythm(graph_visual.set_get_step(graph_visual.graph.data.size - 1),new_edge,new_vertex,delete) }
+        final.setOnAction {
+            if (graph_visual.get_step() == -1) {
+                new_vertex.isDisable = true
+                new_edge.isDisable = true
+                delete.isDisable = true
+                if (graph_visual.graph.correct_graph()) step_by_step_algorythm(graph_visual.set_get_step(graph_visual.graph.data.size - 1), new_edge, new_vertex,delete)
+            }
+                else step_by_step_algorythm(graph_visual.set_get_step(graph_visual.graph.data.size - 1),new_edge,new_vertex,delete)
+        }
         first_step.setOnAction {
-            new_vertex.isDisable = false
-            new_edge.isDisable = false
-            delete.isDisable = false
-            draw_graph(stage, graph, operations, movements) }
+                new_vertex.isDisable = false
+                new_edge.isDisable = false
+                delete.isDisable = false
+                draw_graph(stage, graph, operations, movements)
+        }
         println("Как вы хотите ввести граф : \n\"1\" - из файла(матрица смежности), \n\"2\" - из консоли(матрица смежности), \n\"3\" - из файла(нижнетреугольная матрица)," +
                 "\n\"4\" - из консоли(нижнетреугольная матрица), \n\"5\" - в режиме реального времени самому нарисовать граф.")
         val variant = scan.nextInt()
