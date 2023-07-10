@@ -151,13 +151,13 @@ class Vizualisation : Application() {
         else if (step == graph_visual.graph.data.size - 1) step_information.text = "На шаге №$step была добавлена " +
                 "вершина \"${graph_visual.get_vertexes()[considered_vertexes.last()].get_name().text}\". Построение минимального " +
                 "остовного дерева окончено"
-        else step_information.text = "Чтобы выбрать выбрать новую начальную вершину нажмите на нее дважды." +
+        else step_information.text = "Чтобы  выбрать новую начальную вершину нажмите на нее дважды." +
                 " Редактирование графа доступно только на данном шаге."
     }
 
     fun draw_graph(stage: Stage, graph: Graph, buttons1: HBox, buttons2: HBox) {
         graph_visual = GraphVizualisation(stage.height, graph)
-        step_information = Label("Чтобы выбрать выбрать новую начальную вершину нажмите на нее дважды." +
+        step_information = Label("Чтобы выбрать новую начальную вершину нажмите на нее дважды." +
                     " Редактирование графа доступно только на данном шаге.")
         step_information.layoutX = 30.0
         step_information.layoutY = stage.height - 100.0
