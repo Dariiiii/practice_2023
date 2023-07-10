@@ -2,8 +2,11 @@ package org.jetbrains.kotlin.Math
 
 import java.io.File
 import java.util.*
+import kotlin.system.exitProcess
 
+// класс для графа. Граф представлен матрицей смежности, если ребра между вершинами нет, то в соответстсвующей ячейке будет значение Int.MAXVALUE
 open class Graph(var start_vertex: Int = 0) {
+    //mutableListOf - представляет собой динамически расширяемый список элементов.
     var name_vertex: MutableList<String> = mutableListOf()
     var data = mutableListOf<MutableList<Int>>()
 
@@ -20,6 +23,8 @@ open class Graph(var start_vertex: Int = 0) {
         return (sb.reverse().toString())
     }
 
+
+    // метод для чтения матрицы из файла
     fun read_from_file(filename: String) {
         try {
             val file = File(filename)
@@ -37,11 +42,20 @@ open class Graph(var start_vertex: Int = 0) {
                     this.name_vertex.add(default_name(i + 1))
                 }
             }
+            for (i in 0 until data.size){
+                for (j in 0 until data.size) {
+                    if (data[i][j]!=data[j][i]) {
+                        println("Матрица смежности несимметрична. Попробуйте снова.")
+                        exitProcess(0)
+                    }
+                }
+            }
             modificate()
         }
         catch (e: Exception) { println("Файл не найден: $filename") }
     }
 
+    // метод для чтения матрицы из консоли
     fun read_from_console() {
         val scan = Scanner(System.`in`)
         println("Сколько вершин должно быть в графе?")
@@ -66,28 +80,44 @@ open class Graph(var start_vertex: Int = 0) {
             val row = line.split(" ").map { it.toInt() }.toMutableList()
             data.add(row)
         }
+        for (i in 0 until data.size){
+            for (j in 0 until data.size) {
+                if (data[i][j]!=data[j][i]) {
+                    println("Матрица смежности несимметрична. Попробуйте снова.")
+                    data.clear()
+                    read_from_console()
+                    break
+                }
+            }
+        }
         modificate()
     }
 
+    fun modificate() {
+        for (i in 0 until data.size) {
+            for (j in 0 until data[i].size) {
+                if (data[i][j] == -1 || i==j ) data[i][j] = Int.MAX_VALUE
+            }
+        }
+    }
 
+    // метод, который возвращает строку для вывода информации о графе в консоль
+    //????????????
     override fun toString(): String {
-        var string: String = ""
+        var string = ""
         data.forEach() {
             string += it.toString() + "\n"
         }
         return string
     }
 
-    fun modificate() {
-        for (i in 0 until data.size) {
-            for (j in 0 until data[i].size) {
-                if (data[i][j] == -1) data[i][j] = Int.MAX_VALUE
-            }
-        }
+    // метод для переопределения весов ребер(если в файле было -1, значит ребра нет)
+
+    fun set_start_vertex(new_start_vertex: Int) {
+        this.start_vertex = new_start_vertex
     }
 
-    fun set_start_vertex(new_start_vertex: Int) { this.start_vertex = new_start_vertex }
-
+    // реализация алгоритма Прима для графа, возвращает массив пар, соответствующих началу и концу ребра
     fun PrimAlgorithm(): Pair<Pair<MutableList<Pair<Int, Int>>, MutableList<MutableList<Pair<Int, Int>>>>, MutableList<Int>> {
         val edges_considered_at_the_step: MutableList<MutableList<Pair<Int, Int>>> = mutableListOf()
         val result_edges: MutableList<Pair<Int, Int>> = mutableListOf()
@@ -111,7 +141,7 @@ open class Graph(var start_vertex: Int = 0) {
                 if (data[i][j] != Int.MAX_VALUE) flag = true
             }
             if (!flag) {
-                println("Созданный граф является несвязным или задано не более двух вершин.")
+                println("ээ слыш черт давай бля нормально делай понял да")
                 return false
             }
         }
@@ -125,7 +155,12 @@ open class Graph(var start_vertex: Int = 0) {
         for (i in 0 until added_vertexes.size) {
             for (j in 0 until data[added_vertexes[i]].size) {
                 if (j !in added_vertexes) {
-                    if (data[added_vertexes[i]][j] < Int.MAX_VALUE) edges_considered_at_the_step.add(Pair(added_vertexes[i], j))
+                    if (data[added_vertexes[i]][j] < Int.MAX_VALUE) edges_considered_at_the_step.add(
+                        Pair(
+                            added_vertexes[i],
+                            j
+                        )
+                    )
                     if (data[added_vertexes[i]][j] < min) {
                         min = data[added_vertexes[i]][j]
                         new_edge = Pair(added_vertexes[i], j)
@@ -149,4 +184,9 @@ open class Graph(var start_vertex: Int = 0) {
             string.removeAt(number - 1)
         }
     }
+
+    fun get_matrix() : MutableList<MutableList<Int>> { return data }
+
+    fun get_names() : MutableList<String> { return  name_vertex }
+
 }

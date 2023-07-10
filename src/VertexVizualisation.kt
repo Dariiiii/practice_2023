@@ -5,11 +5,11 @@ import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import javafx.scene.text.Font
 import javafx.scene.text.Text
-
-class VertexVizualisation(scene_size : Double, x : Double, y : Double, name_vertex: String, var number: Int ) : Circle(){
-    var name: Text
-    var circle: Circle
-    var data : Group
+// класс для визуализации вершины, состоящей из круга и имени(символ латинского алфавита)pr
+class VertexVizualisation(scene_size : Double, x : Double, y : Double, name_vertex: String,private var number: Int ) : Circle(){
+    private var name: Text
+    private var circle: Circle
+    private var data : Group
     init {
         circle = Circle(x,y, scene_size / 25.0)
         circle.fill = Color.PINK
@@ -22,6 +22,16 @@ class VertexVizualisation(scene_size : Double, x : Double, y : Double, name_vert
         text.x = circle.centerX - text.layoutBounds.width / 2.0
         text.y = circle.centerY + text.layoutBounds.height / 4.0
         data = Group(circle,text)
+
     }
 
+    fun get_number() : Int { return number }
+
+    fun decrease_number() {number--}
+
+    fun group() : Group { return data }
+
+    fun get_circle() : Circle { return circle }
+
+    fun get_name() : Text { return name }
 }

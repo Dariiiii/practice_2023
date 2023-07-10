@@ -4,12 +4,13 @@ import javafx.scene.Group
 import kotlin.math.cos
 import kotlin.math.sin
 
+//класс для визуализации графа(множество ребер и множество вершин)
 class GraphVizualisation(scene_size: Double, val graph: Graph) {
-    var vertexes = mutableListOf<VertexVizualisation>()
-    val radius = (3.0 / 8.0) * scene_size
-    var edges = mutableListOf<MutableList<Edge>>()
-    var full_graph = Group()
-    var step = -1
+    private var vertexes = mutableListOf<VertexVizualisation>()
+    private val radius = (3.0 / 8.0) * scene_size
+    private var edges = mutableListOf<MutableList<Edge>>()
+    private var full_graph = Group()
+    private var step = -1
     init {
         var previous_y : Double
         var previous_x : Double
@@ -31,10 +32,10 @@ class GraphVizualisation(scene_size: Double, val graph: Graph) {
 
         for (edge_array in edges) {
             for (edge in edge_array)
-                full_graph.children.add(edge.edgegroup)
+                full_graph.children.add(edge.group())
         }
         for (vertex in vertexes) {
-            full_graph.children.add(vertex.data)
+            full_graph.children.add(vertex.group())
         }
     }
 
@@ -54,56 +55,63 @@ class GraphVizualisation(scene_size: Double, val graph: Graph) {
         else step = -1
         return step
     }
-
     fun add_edge(new_edge : Edge) {
-        if (new_edge.position_2 != new_edge.position_1) {
-            graph.data[new_edge.position_1][new_edge.position_2] = new_edge.weight
-            graph.data[new_edge.position_2][new_edge.position_1] = new_edge.weight
-            for (edge in edges[new_edge.position_2]) {
-                if (edge.position_1 == new_edge.position_1) {
-                    edges[new_edge.position_2].remove(edge)
-                    full_graph.children.remove(edge.edgegroup)
-                    break
+        if (new_edge.get_positions().second != new_edge.get_positions().first) {
+            graph.data[new_edge.get_positions().first][new_edge.get_positions().second] = new_edge.get_weight()
+            graph.data[new_edge.get_positions().second][new_edge.get_positions().first] = new_edge.get_weight()
+                for (edge in edges[new_edge.get_positions().second]) {
+                    if (edge.get_positions().first == new_edge.get_positions().first) {
+                        edges[new_edge.get_positions().second].remove(edge)
+                        full_graph.children.remove(edge.group())
+                        break
+                    }
                 }
-            }
-            edges[new_edge.position_2].add(new_edge)
-            full_graph.children.add(0,new_edge.edgegroup)
+            edges[new_edge.get_positions().second].add(new_edge)
+            full_graph.children.add(0,new_edge.group())
         }
     }
 
     fun add_vertex(new_vertex: VertexVizualisation){
-        graph.create_new_vertex(new_vertex.name.text)
+        graph.create_new_vertex(new_vertex.get_name().text)
         vertexes.add(new_vertex)
         edges.add(mutableListOf<Edge>())
-        full_graph.children.add(new_vertex.data)
+        full_graph.children.add(new_vertex.group())
     }
 
     fun delete_vertex(vertex_to_delete : VertexVizualisation) {
-        graph.delete_vertex(vertex_to_delete.number)
-        full_graph.children.remove(vertex_to_delete.data)
+        graph.delete_vertex(vertex_to_delete.get_number())
+        full_graph.children.remove(vertex_to_delete.group())
         for (edge_list in edges) {
             for (edge in edge_list) {
-                if (edge.position_2 == vertex_to_delete.number - 1 || edge.position_1 == vertex_to_delete.number - 1) {
-                    full_graph.children.remove(edge.edgegroup)
+                if (edge.get_positions().second == vertex_to_delete.get_number() - 1 || edge.get_positions().first == vertex_to_delete.get_number() - 1) {
+                    full_graph.children.remove(edge.group())
                 }
             }
         }
         vertexes.remove(vertex_to_delete)
-        for (i in vertex_to_delete.number - 1 until vertexes.size) {
-            vertexes[i].number -= 1
+        for (i in vertex_to_delete.get_number() - 1 until vertexes.size) {
+            vertexes[i].decrease_number()
         }
         for (edgeline in edges){
             for(edge in edgeline){
-                if (edge.position_1 > vertex_to_delete.number - 1) edge.position_1 --
-                if (edge.position_2 > vertex_to_delete.number - 1) edge.position_2 --
+                if (edge.get_positions().first > vertex_to_delete.get_number() - 1) edge.decrease_positions(1)
+                if (edge.get_positions().second > vertex_to_delete.get_number() - 1) edge.decrease_positions(2)
             }
         }
     }
 
     fun delete_edge(edge : Edge){
-        graph.data[edge.position_1][edge.position_2] = Int.MAX_VALUE
-        graph.data[edge.position_2][edge.position_1] = Int.MAX_VALUE
-        edges[edge.position_2].remove(edge)
-        full_graph.children.remove(edge.edgegroup)
+        graph.data[edge.get_positions().first][edge.get_positions().second] = Int.MAX_VALUE
+        graph.data[edge.get_positions().second][edge.get_positions().first] = Int.MAX_VALUE
+        edges[edge.get_positions().second].remove(edge)
+        full_graph.children.remove(edge.group())
     }
+
+    fun get_edges() : MutableList<MutableList<Edge>> { return edges }
+
+    fun get_vertexes() : MutableList<VertexVizualisation> { return vertexes }
+
+    fun group() : Group { return full_graph }
+
+    fun get_step() : Int { return step }
 }
