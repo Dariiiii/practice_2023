@@ -25,8 +25,9 @@ class GraphEditor() {
                     )
                     graph_visual.add_vertex(new_vertex)
                     stage.scene.setOnMouseClicked(null)
+                    graph_visual.graph.name_vertex.add(new_name)
                     able_disable_buttons(button1,button2,button3,button4,false)
-                    step_information.text = "Чтобы выбрать выбрать новую начальную вершину нажмите на нее дважды." +
+                    step_information.text = "Чтобы выбрать новую начальную вершину нажмите на нее дважды." +
                             " Редактирование графа доступно только на данном шаге."
                     action(stage, graph_visual)
                 }
@@ -43,8 +44,8 @@ class GraphEditor() {
         var name: String
         if (result.isPresent) {
             name = result.get()
-            if (name == "") name = graph_visual.graph.default_name(graph_visual.graph.data.size)
-        } else name = graph_visual.graph.default_name(graph_visual.graph.data.size)
+            if (name == "") name = graph_visual.graph.default_name(graph_visual.graph.name_vertex.size + 1)
+        } else name = graph_visual.graph.default_name(graph_visual.graph.name_vertex.size + 1)
         return name
     }
 
@@ -71,7 +72,6 @@ class GraphEditor() {
             var startCircle: VertexVizualisation? = null
             stage.scene.setOnMouseClicked { event ->
                 if (event.button == MouseButton.PRIMARY && graph_visual.graph.data.size >= 2) {
-                    print(1)
                     val clickedCircle = getClickedCircle(event.x, event.y, graph_visual)
                     if (clickedCircle != null) {
                         if (startCircle != null) {
@@ -126,9 +126,10 @@ class GraphEditor() {
             val new_edge = Edge(startCircle, endCircle, weight)
             graph_visual.add_edge(new_edge)
         }
-        step_information.text = "Чтобы выбрать выбрать новую начальную вершину нажмите на нее дважды." +
+        step_information.text = "Чтобы выбрать новую начальную вершину нажмите на нее дважды." +
                 " Редактирование графа доступно только на данном шаге."
     }
+
     fun able_disable_buttons(button1 : Button, button2 : Button, button3 : Button, button4 : Button, action : Boolean){
         button1.isDisable = action
         button2.isDisable = action
@@ -156,7 +157,7 @@ class GraphEditor() {
                 able_disable_buttons(button1,button2,button3,button4,false)
                 stage.scene.setOnMouseClicked(null)
                 action(stage, graph_visual)
-                step_information.text = "Чтобы выбрать выбрать новую начальную вершину нажмите на нее дважды." +
+                step_information.text = "Чтобы выбрать новую начальную вершину нажмите на нее дважды." +
                         " Редактирование графа доступно только на данном шаге."
             }
         }
