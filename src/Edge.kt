@@ -1,10 +1,11 @@
 package org.jetbrains.kotlin.Math
+
 import javafx.scene.Group
 import javafx.scene.control.Label
 import javafx.scene.paint.Color
 import javafx.scene.shape.Line
-import javafx.scene.shape.Shape
 import javafx.scene.text.Font
+
 // класс для визуализации ребра(линия и подпись веса)
 class Edge(Vertex1 : VertexVizualisation, Vertex2: VertexVizualisation,private val weight : Int) : Line(){
     private var line : Line
@@ -25,8 +26,8 @@ class Edge(Vertex1 : VertexVizualisation, Vertex2: VertexVizualisation,private v
         line.endXProperty().bind(Vertex2.get_circle().centerXProperty())
         line.endYProperty().bind(Vertex2.get_circle().centerYProperty())
         line_label.textFill = Color.BLACK
-        line_label.layoutX = (line.startX.toDouble() + line.endX.toDouble()) / 2.0 //- line_label.width.toDouble() / 2.0
-        line_label.layoutY =(line.startY.toDouble() + line.endY.toDouble()) / 2.0// - line_label.height.toDouble() / 2.0
+        line_label.layoutX = (line.startX + line.endX) / 2.0
+        line_label.layoutY =(line.startY + line.endY) / 2.0
         // Привязываем конец линии к окружности circle2
         edgegroup = Group(line,line_label)
     }

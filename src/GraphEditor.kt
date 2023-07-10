@@ -135,6 +135,7 @@ class GraphEditor() {
         button3.isDisable = action
         button4.isDisable = action
     }
+
     fun delete_element(stage: Stage,graph_visual: GraphVizualisation, step_information: Label,button1 : Button, button2 : Button, button3 : Button, button4 : Button) {
         if (graph_visual.get_step() == -1){
             able_disable_buttons(button1,button2,button3,button4,true)
@@ -161,6 +162,7 @@ class GraphEditor() {
         }
 
     }
+
     fun isInsideCircle(x: Double, y: Double, circle: Circle): Boolean {
         val distance = Math.sqrt(Math.pow(x - circle.centerX, 2.0) + Math.pow(y - circle.centerY, 2.0))
         return distance <= circle.radius

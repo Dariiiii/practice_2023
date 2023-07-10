@@ -22,14 +22,18 @@ class Vizualisation : Application() {
         stage.width = 1000.0
         stage.height = 800.0
         val new_vertex = Button("добавить вершину")
-        val previous_step = Button("предыдущий шаг")
-        val first_step = Button("перейти к началу/форматирование графа")
-        val final = Button("перейти к результату")
-        val next_step = Button("следующий шаг")
-        new_vertex.setOnAction { graph_editor.create_vertex(stage, graph_visual, step_information,final,first_step,previous_step,next_step) }
         val new_edge = Button("добавить/изменить ребро")
-        new_edge.setOnAction { graph_editor.create_edge(stage, graph_visual, step_information,final,first_step,previous_step,next_step) }
         val delete = Button("удалить элемент графа")
+        val next_step = Button("следующий шаг")
+        val previous_step = Button("предыдущий шаг")
+        val final = Button("перейти к результату")
+        val first_step = Button("перейти к началу/форматирование графа")
+        val movements = HBox(first_step, previous_step, next_step, final)
+        val operations = HBox(new_edge, new_vertex, delete)
+        operations.spacing = 10.0
+        movements.spacing = 10.0
+        new_vertex.setOnAction { graph_editor.create_vertex(stage, graph_visual, step_information,final,first_step,previous_step,next_step) }
+        new_edge.setOnAction { graph_editor.create_edge(stage, graph_visual, step_information,final,first_step,previous_step,next_step) }
         delete.setOnAction { graph_editor.delete_element(stage, graph_visual, step_information,final,first_step,previous_step,next_step) }
         next_step.setOnAction {
             if (graph_visual.get_step() == -1) {
@@ -42,26 +46,35 @@ class Vizualisation : Application() {
         }
         previous_step.setOnAction { step_by_step_algorythm(graph_visual.previous_step(),new_edge,new_vertex,delete) }
         final.setOnAction { step_by_step_algorythm(graph_visual.set_get_step(graph_visual.graph.data.size - 1),new_edge,new_vertex,delete) }
-        val movements = HBox(first_step, previous_step, next_step, final)
-        val operations = HBox(new_edge, new_vertex, delete)
-        operations.spacing = 10.0
-        movements.spacing = 10.0
         first_step.setOnAction {
             new_vertex.isDisable = false
             new_edge.isDisable = false
             delete.isDisable = false
             draw_graph(stage, graph, operations, movements) }
-        println("Как вы хотите ввести граф : \"1\" - из файла(матрица смежности), \"2\" - из консоли(матрица смежности), \"3\" - в режиме реального времени самому нарисовать граф.")
+        println("Как вы хотите ввести граф : \n\"1\" - из файла(матрица смежности), \n\"2\" - из консоли(матрица смежности), \n\"3\" - из файла(нижнетреугольная матрица)," +
+                "\n\"4\" - из консоли(нижнетреугольная матрица), \n\"5\" - в режиме реального времени самому нарисовать граф.")
         val variant = scan.nextInt()
         when (variant) {
             1 -> {
                 println("Матрица смежности должна быть представлена в формате : симметричная матрица с \"-1\" на главной диагонали, где \"-1\" означает отсутствие ребра между двумя вершинами.")
                 graph.read_from_file(filename)
+                graph.check_symmetry()
             }
 
             2 -> {
                 println("Матрица смежности должна быть представлена в формате : симметричная матрица с \"-1\" на главной диагонали, где \"-1\" означает отсутствие ребра между двумя вершинами.")
                 graph.read_from_console()
+                graph.check_symmetry()
+            }
+            3 -> {
+                println("Матрица должна быть представлена в формате : нижнетреугольная матрица с \"-1\" на главной диагонали, где \"-1\" означает отсутствие ребра между двумя вершинами.")
+                graph.read_from_file(filename)
+                graph.reflect_matrix()
+            }
+            4 -> {
+                println("Матрица должна быть представлена в формате : нижнетреугольная матрица с \"-1\" на главной диагонали, где \"-1\" означает отсутствие ребра между двумя вершинами.")
+                graph.read_from_console()
+                graph.reflect_matrix()
             }
         }
         draw_graph(stage, graph, operations, movements)
@@ -88,30 +101,28 @@ class Vizualisation : Application() {
             for (edge in edge_list) {
                 edge.get_line().stroke = Color.DARKGRAY
                 if (step != -1) {
-                    if (Pair(edge.get_positions().first, edge.get_positions().second) in result_edges.subList(0, step + 1) || Pair(
-                            edge.get_positions().second, edge.get_positions().first
-                        ) in result_edges.subList(0, step + 1)
-                    ) {
+                    if (Pair(edge.get_positions().first, edge.get_positions().second) in
+                        result_edges.subList(0, step + 1) || Pair(edge.get_positions().second,
+                            edge.get_positions().first) in result_edges.subList(0, step + 1)) {
                         edge.get_line().stroke = Color.RED
-                    } else if (Pair(edge.get_positions().first, edge.get_positions().second) in edges_considered_at_the_step[step] || Pair(
-                            edge.get_positions().second, edge.get_positions().first
-                        ) in edges_considered_at_the_step[step]
-                    ) {
+                    } else if (Pair(edge.get_positions().first, edge.get_positions().second) in
+                        edges_considered_at_the_step[step] || Pair(edge.get_positions().second,
+                            edge.get_positions().first) in edges_considered_at_the_step[step]) {
                         edge.get_line().stroke = Color.BLUE
                     }
                 }
             }
         }
-        for (vertex in graph_visual.get_vertexes()) vertex.get_circle().stroke = Color.BLACK
+        for (vertex in graph_visual.get_vertexes())
+            vertex.get_circle().stroke = Color.BLACK
         if (step == -1) {
             new_vertex.isDisable = false
             new_edge.isDisable = false
             delete.isDisable = false
             graph_visual.get_vertexes()[graph_visual.graph.start_vertex].get_circle().stroke = Color.RED
         }
-        for (i in 0 until step + 1) {
+        for (i in 0 until step + 1)
             graph_visual.get_vertexes()[considered_vertexes[i]].get_circle().stroke = Color.RED
-        }
         update_step_information(step, considered_vertexes, edges_considered_at_the_step)
     }
 
@@ -137,8 +148,7 @@ class Vizualisation : Application() {
 
     fun draw_graph(stage: Stage, graph: Graph, buttons1: HBox, buttons2: HBox) {
         graph_visual = GraphVizualisation(stage.height, graph)
-        step_information = Label(
-            "Чтобы выбрать выбрать новую начальную вершину нажмите на нее дважды." +
+        step_information = Label("Чтобы выбрать выбрать новую начальную вершину нажмите на нее дважды." +
                     " Редактирование графа доступно только на данном шаге.")
         step_information.layoutX = 30.0
         step_information.layoutY = stage.height - 100.0

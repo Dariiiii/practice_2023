@@ -5,6 +5,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 //класс для визуализации графа(множество ребер и множество вершин)
+
 class GraphVizualisation(scene_size: Double, val graph: Graph) {
     private var vertexes = mutableListOf<VertexVizualisation>()
     private val radius = (3.0 / 8.0) * scene_size
@@ -29,7 +30,6 @@ class GraphVizualisation(scene_size: Double, val graph: Graph) {
                 }
             }
         }
-
         for (edge_array in edges) {
             for (edge in edge_array)
                 full_graph.children.add(edge.group())
