@@ -4,14 +4,24 @@ import javafx.scene.Group
 import kotlin.math.cos
 import kotlin.math.sin
 
-//класс для визуализации графа(множество ребер и множество вершин)
-
+/**
+ * Класс для визуализации графа (множество ребер и множество вершин).
+ *
+ * @param scene_size размер сцены для визуализации
+ * @property graph граф, который нужно визуализировать
+ * @property vertexes список вершин графа
+ * @property radius радиус окружности, на которой расположены вершины графа
+ * @property edges список ребер графа
+ * @property full_graph группа, содержащая все вершины и ребра графа
+ * @property step шаг визуализации графа
+ */
 class GraphVizualisation(scene_size: Double, val graph: Graph) {
     private var vertexes = mutableListOf<VertexVizualisation>()
     private val radius = (3.0 / 8.0) * scene_size
     private var edges = mutableListOf<MutableList<Edge>>()
     private var full_graph = Group()
     private var step = -1
+
     init {
         var previous_y : Double
         var previous_x : Double
@@ -39,23 +49,72 @@ class GraphVizualisation(scene_size: Double, val graph: Graph) {
         }
     }
 
+    /**
+     * Устанавливает и возвращает текущий шаг при визуализации.
+     *
+     * @param step: Номер шага.
+     * @return: Новый номер шага.
+     */
     fun set_get_step(step: Int): Int {
         this.step = step
         return this.step
     }
 
+    /**
+     * Возвращает список ребер графа.
+     *
+     * @return: Список ребер графа.
+     */
+    fun get_edges() : MutableList<MutableList<Edge>> { return edges }
+
+    /**
+     * Возвращает список вершин графа.
+     *
+     * @return: Список вершин графа.
+     */
+    fun get_vertexes() : MutableList<VertexVizualisation> { return vertexes }
+
+    /**
+     * Возвращает объект Group, содержащий все ребра и вершины графа.
+     *
+     * @return: Объект Group.
+     */
+    fun group() : Group { return full_graph }
+
+    /**
+     * Возвращает текущий шаг при визуализации.
+     *
+     * @return: Номер текущего шага.
+     */
+    fun get_step() : Int { return step }
+
+    /**
+     * Переходит к следующему шагу при визуализации и возвращает новый номер шага.
+     *
+     * @return: Новый номер шага.
+     */
     fun next_step(): Int {
         if (step < graph.data.size - 1) step += 1
         else step = graph.data.size - 1
         return step
     }
 
+    /**
+     * Переходит к предыдущему шагу при визуализации и возвращает новый номер шага.
+     *
+     * @return: Новый номер шага.
+     */
     fun previous_step(): Int {
         if (step > -1) step -= 1
         else step = -1
         return step
     }
 
+    /**
+     * Добавляет новое ребро в граф.
+     *
+     * @param new_edge: Новое ребро для добавления.
+     */
     fun add_edge(new_edge : Edge) {
         if (new_edge.get_positions().second != new_edge.get_positions().first) {
             graph.data[new_edge.get_positions().first][new_edge.get_positions().second] = new_edge.get_weight()
@@ -72,6 +131,11 @@ class GraphVizualisation(scene_size: Double, val graph: Graph) {
         }
     }
 
+    /**
+     * Метод для добавления новой вершины в граф.
+     *
+     * @param new_vertex новая вершина, которую нужно добавить в граф
+     */
     fun add_vertex(new_vertex: VertexVizualisation){
         graph.create_new_vertex(new_vertex.get_name().text)
         vertexes.add(new_vertex)
@@ -79,6 +143,11 @@ class GraphVizualisation(scene_size: Double, val graph: Graph) {
         full_graph.children.add(new_vertex.group())
     }
 
+    /**
+     * Метод для удаления вершины из графа.
+     *
+     * @param vertex_to_delete вершина, которую нужно удалить из графа
+     */
     fun delete_vertex(vertex_to_delete : VertexVizualisation) {
         for (edge in edges[vertex_to_delete.get_number()-1]) {
             if (edge.get_positions().first == vertex_to_delete.get_number() - 1 || edge.get_positions().second == vertex_to_delete.get_number() - 1 ) {
@@ -90,8 +159,7 @@ class GraphVizualisation(scene_size: Double, val graph: Graph) {
             var size = 0
             while (size < edges[i].size) {
                 val edge = edges[i][size]
-                if (edge.get_positions().first == (vertex_to_delete.get_number() - 1)
-                    || edge.get_positions().second == (vertex_to_delete.get_number() - 1)) {
+                if (edge.get_positions().first == (vertex_to_delete.get_number() - 1)) {
                     full_graph.children.remove(edge.group())
                     edges[i].remove(edge)
                 }
@@ -114,6 +182,11 @@ class GraphVizualisation(scene_size: Double, val graph: Graph) {
         }
     }
 
+    /**
+     * Метод для удаления ребра из графа.
+     *
+     * @param edge ребро, которое нужно удалить из графа
+     */
     fun delete_edge(edge : Edge){
         graph.data[edge.get_positions().first][edge.get_positions().second] = Int.MAX_VALUE
         graph.data[edge.get_positions().second][edge.get_positions().first] = Int.MAX_VALUE
@@ -121,11 +194,4 @@ class GraphVizualisation(scene_size: Double, val graph: Graph) {
         full_graph.children.remove(edge.group())
     }
 
-    fun get_edges() : MutableList<MutableList<Edge>> { return edges }
-
-    fun get_vertexes() : MutableList<VertexVizualisation> { return vertexes }
-
-    fun group() : Group { return full_graph }
-
-    fun get_step() : Int { return step }
 }

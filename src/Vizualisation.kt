@@ -9,12 +9,25 @@ import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 
+/**
+ * Класс для визуализации графа и управления визуализацией.
+ *
+ * @property graph_visual объект класса GraphVizualisation для визуализации графа
+ * @property full_group группа, содержащая все элементы интерфейса
+ * @property step_information информация о текущем шаге визуализации
+ * @property graph_editor объект класса GraphEditor для редактирования графа
+ */
 class Vizualisation : Application() {
     private lateinit var graph_visual : GraphVizualisation
     private lateinit var full_group : Group
     private lateinit var step_information : Label
     private val graph_editor = GraphEditor()
 
+    /**
+     * Метод, вызываемый при запуске приложения.
+     *
+     * @param stage текущее окно приложения
+     */
     override fun start(stage: Stage) {
         val graph = Graph()
         val filename = "Graph1.txt"
@@ -52,13 +65,13 @@ class Vizualisation : Application() {
                 delete.isDisable = true
                 if (graph_visual.graph.correct_graph()) step_by_step_algorythm(graph_visual.set_get_step(graph_visual.graph.data.size - 1), new_edge, new_vertex,delete)
             }
-                else step_by_step_algorythm(graph_visual.set_get_step(graph_visual.graph.data.size - 1),new_edge,new_vertex,delete)
+            else step_by_step_algorythm(graph_visual.set_get_step(graph_visual.graph.data.size - 1),new_edge,new_vertex,delete)
         }
         first_step.setOnAction {
-                new_vertex.isDisable = false
-                new_edge.isDisable = false
-                delete.isDisable = false
-                draw_graph(stage, graph, operations, movements)
+            new_vertex.isDisable = false
+            new_edge.isDisable = false
+            delete.isDisable = false
+            draw_graph(stage, graph, operations, movements)
         }
         println("Как вы хотите ввести граф : \n\"1\" - из файла(матрица смежности), \n\"2\" - из консоли(матрица смежности), \n\"3\" - из файла(нижнетреугольная матрица)," +
                 "\n\"4\" - из консоли(нижнетреугольная матрица), \n\"5\" - в режиме реального времени самому нарисовать граф.")
@@ -101,6 +114,14 @@ class Vizualisation : Application() {
         stage.show()
     }
 
+    /**
+     * Метод для визуализации алгоритма Прима пошагово.
+     *
+     * @param step текущий шаг алгоритма
+     * @param new_edge кнопка "добавить/изменить ребро"
+     * @param new_vertex кнопка "добавить вершину"
+     * @param delete кнопка "удалить элемент графа"
+     */
     fun step_by_step_algorythm(step: Int, new_edge: Button, new_vertex: Button, delete: Button) {
         val step_data = graph_visual.graph.PrimAlgorithm()
         val result_edges = step_data.first.first
@@ -135,6 +156,13 @@ class Vizualisation : Application() {
         update_step_information(step, considered_vertexes, edges_considered_at_the_step)
     }
 
+    /**
+     * Метод обновляет информацию о текущем шаге алгоритма Прима и отображает ее на экране.
+     *
+     * @param step текущий шаг алгоритма
+     * @param consideredvertexes список рассматриваемых вершин на каждом шаге
+     * @param addededges список добавленных ребер на каждом шаге
+     */
     fun update_step_information(step: Int, considered_vertexes: MutableList<Int>,
                                 added_edges: MutableList<MutableList<Pair<Int, Int>>>, ) {
         var weights = ""
@@ -155,10 +183,18 @@ class Vizualisation : Application() {
                 " Редактирование графа доступно только на данном шаге."
     }
 
+    /**
+     * Метод для визуализации окна.
+     *
+     * @param stage текущее окно приложения
+     * @param graph граф, который нужно отрисовать
+     * @param operations группа с кнопками операций над графом
+     * @param movements группа с кнопками перемещения по визуализации
+     */
     fun draw_graph(stage: Stage, graph: Graph, buttons1: HBox, buttons2: HBox) {
         graph_visual = GraphVizualisation(stage.height, graph)
         step_information = Label("Чтобы выбрать новую начальную вершину нажмите на нее дважды." +
-                    " Редактирование графа доступно только на данном шаге.")
+                " Редактирование графа доступно только на данном шаге.")
         step_information.layoutX = 30.0
         step_information.layoutY = stage.height - 100.0
         full_group = Group(graph_visual.group(), buttons1, buttons2, step_information)

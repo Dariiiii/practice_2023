@@ -4,11 +4,23 @@ import java.io.File
 import java.util.*
 import kotlin.system.exitProcess
 
-// класс для графа. Граф представлен матрицей смежности, если ребра между вершинами нет, то в соответстсвующей ячейке будет значение Int.MAXVALUE
+
+/**
+ * Ккласс для графа. Граф представлен матрицей смежности, если ребра между вершинами нет, то в соответстсвующей ячейке будет значение Int.MAXVALUE.
+ *
+ * @property start_vertex начальная вершина
+ * @property name_vertex список имен вершин
+ * @property data матрица смежности графа
+ */
 open class Graph(var start_vertex: Int = 0) {
     var name_vertex: MutableList<String> = mutableListOf()
     var data = mutableListOf<MutableList<Int>>()
-
+    /**
+     * Метод для генерации имени вершины по умолчанию.
+     *
+     * @param quotient порядок вершины для генерации имени вершины
+     * @return сгенерированное имя вершины
+     */
     fun default_name(quotient: Int): String {
         val base = 26
         val sb = StringBuilder()
@@ -22,7 +34,11 @@ open class Graph(var start_vertex: Int = 0) {
         return (sb.reverse().toString())
     }
 
-    // метод для чтения матрицы из файла
+    /**
+     * Метод для чтения матрицы смежности из файла.
+     *
+     * @param filename имя файла, из которого будет производиться чтение
+     */
     fun read_from_file(filename: String) {
         try {
             val file = File(filename)
@@ -46,7 +62,9 @@ open class Graph(var start_vertex: Int = 0) {
         }
     }
 
-    // метод для чтения матрицы из консоли
+    /**
+     * Метод для чтения матрицы смежности из консоли.
+     */
     fun read_from_console() {
         val scan = Scanner(System.`in`)
         println("Сколько вершин должно быть в графе?")
@@ -73,7 +91,9 @@ open class Graph(var start_vertex: Int = 0) {
         }
         modificate()
     }
-
+    /**
+     * Метод для отражения матрицы смежности (симметричность графа).
+     */
     fun reflect_matrix(){
         if (check_correct_matrix()) {
             for (i in 0 until data.size) {
@@ -87,7 +107,11 @@ open class Graph(var start_vertex: Int = 0) {
             exitProcess(0)
         }
     }
-
+    /**
+     * Метод для проверки корректности матрицы смежности.
+     *
+     * @return true, если матрица корректна, иначе false
+     */
     fun check_correct_matrix(): Boolean {
         var flag = true
         for (i in 0 until data.size) {
@@ -95,7 +119,9 @@ open class Graph(var start_vertex: Int = 0) {
         }
         return flag
     }
-
+    /**
+     * Метод для проверки симметричности матрицы смежности.
+     */
     fun check_symmetry(){
         var check = true
         for (i in 0 until data.size) {
@@ -127,12 +153,20 @@ open class Graph(var start_vertex: Int = 0) {
         }
         return string
     }
-
+    /**
+     * Метод для установки вершины начала.
+     *
+     * @param new_start_vertex новая вершина начала
+     */
     fun set_start_vertex(new_start_vertex: Int) {
         this.start_vertex = new_start_vertex
     }
 
-    // реализация алгоритма Прима для графа, возвращает массив пар, соответствующих началу и концу ребра
+    /**
+     * Реализация алгоритма Прима для графа, возвращающая массив пар, соответствующих началу и концу ребра.
+     *
+     * @return пара, содержащая массив пар ребер и массив массивов пар ребер, а также список добавленных вершин
+     */
     fun PrimAlgorithm(): Pair<Pair<MutableList<Pair<Int, Int>>, MutableList<MutableList<Pair<Int, Int>>>>, MutableList<Int>> {
         val edges_considered_at_the_step: MutableList<MutableList<Pair<Int, Int>>> = mutableListOf()
         val result_edges: MutableList<Pair<Int, Int>> = mutableListOf()
@@ -148,7 +182,11 @@ open class Graph(var start_vertex: Int = 0) {
         edges_considered_at_the_step.add(mutableListOf())
         return Pair(Pair(result_edges, edges_considered_at_the_step), added_vertexes)
     }
-
+    /**
+     * Метод для проверки корректности графа.
+     *
+     * @return true, если граф корректен, иначе false
+     */
     fun correct_graph(): Boolean {
         for (i in 0 until data.size) {
             var flag = false
@@ -162,7 +200,13 @@ open class Graph(var start_vertex: Int = 0) {
         }
         return true
     }
-
+    /**
+     * Итерационная реализация алгоритма Прима для графа.
+     *
+     * @param result_edges список ребер
+     * @param added_vertexes список добавленных вершин
+     * @param edges_considered_at_the_step список ребер, рассмотренных на текущем шаге
+     */
     fun iterated_PrimAlgorithm(result_edges: MutableList<Pair<Int, Int>>, added_vertexes: MutableList<Int>,
                                edges_considered_at_the_step: MutableList<Pair<Int, Int>> ) {
         var min = Int.MAX_VALUE
@@ -181,22 +225,38 @@ open class Graph(var start_vertex: Int = 0) {
         added_vertexes.add(new_edge.second)
         result_edges.add(new_edge)
     }
-
+    /**
+     * Метод для создания новой вершины в графе.
+     *
+     * @param name имя новой вершины
+     */
     fun create_new_vertex(name: String) {
         for (i in 0 until data.size) data[i].add(Int.MAX_VALUE)
         data.add(MutableList(data.size + 1) { Int.MAX_VALUE })
         name_vertex.add(name)
     }
-
+    /**
+     * Метод для удаления вершины из графа.
+     *
+     * @param number номер удаляемой вершины
+     */
     fun delete_vertex(number: Int) {
         data.removeAt(number - 1)
         for (string in data) {
             string.removeAt(number - 1)
         }
     }
-
+    /**
+     * Метод для получения матрицы смежности графа.
+     *
+     * @return матрица смежности графа
+     */
     fun get_matrix(): MutableList<MutableList<Int>> { return data }
-
+    /**
+     * Метод для получения списка имен вершин графа.
+     *
+     * @return список имен вершин графа
+     */
     fun get_names(): MutableList<String> { return name_vertex }
 
 }

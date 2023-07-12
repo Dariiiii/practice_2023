@@ -10,8 +10,28 @@ import javafx.scene.shape.Circle
 import javafx.scene.shape.Line
 import javafx.stage.Stage
 
+/**
+ * Класс GraphEditor предоставляет функциональность для редактирования графа.
+ *
+ * @property create_vertex Метод для создания новой вершины в графе.
+ * @property choose_new_name Метод для выбора имени новой вершины.
+ * @property getClickedLine Метод для получения ребра, на которое было произведено нажатие.
+ * @property getClickedCircle Метод для получения вершины, на которую было произведено нажатие.
+ * @property create_edge Метод для создания нового ребра в графе.
+ */
 class GraphEditor() {
 
+    /**
+     * Метод create_vertex создает новую вершину в графе.
+     *
+     * @param stage сцена, на которой отображается граф
+     * @param graph_visual визуализация графа
+     * @param step_information информация о текущем шаге
+     * @param button1 кнопка 1
+     * @param button2 кнопка 2
+     * @param button3 кнопка 3
+     * @param button4 кнопка 4
+     */
     fun create_vertex(stage: Stage, graph_visual: GraphVizualisation, step_information: Label,button1 : Button, button2 : Button, button3 : Button, button4 : Button) {
         if (graph_visual.get_step() == -1) {
             able_disable_buttons(button1,button2,button3,button4,true)
@@ -35,6 +55,13 @@ class GraphEditor() {
         }
     }
 
+    /**
+     * Метод choose_new_name позволяет выбрать имя для новой вершины.
+     *
+     * @param graph_visual визуализация графа
+     *
+     * @return имя для новой вершины
+     */
     fun choose_new_name(graph_visual: GraphVizualisation): String {
         val dialog = TextInputDialog()
         dialog.title = "Ввод имени для новой вершины."
@@ -49,6 +76,15 @@ class GraphEditor() {
         return name
     }
 
+    /**
+     * Метод getClickedLine возвращает ребро, на которое было произведено нажатие.
+     *
+     * @param x координата x нажатия
+     * @param y координата y нажатия
+     * @param graph_visual визуализация графа
+     *
+     * @return ребро, на которое было произведено нажатие или null, если ребра не было
+     */
     fun getClickedLine(x: Double, y: Double, graph_visual: GraphVizualisation): Edge?{
         for(edgeline in graph_visual.get_edges()){
             for (edge in edgeline){
@@ -58,6 +94,15 @@ class GraphEditor() {
         return null
     }
 
+    /**
+     * Метод getClickedCircle возвращает вершину, на которую было произведено нажатие.
+     *
+     * @param x координата x нажатия
+     * @param y координата y нажатия
+     * @param graph_visual визуализация графа
+     *
+     * @return вершина, на которую было произведено нажатие или null, если вершины не было
+     */
     fun getClickedCircle(x: Double, y: Double, graph_visual: GraphVizualisation): VertexVizualisation? {
         for (circle in graph_visual.get_vertexes()) {
             if (circle.get_circle().contains(x, y)) return circle
@@ -65,6 +110,17 @@ class GraphEditor() {
         return null
     }
 
+    /**
+     * Метод create_edge создает новое ребро в графе.
+     *
+     * @param stage сцена, на которой отображается граф
+     * @param graph_visual визуализация графа
+     * @param step_information информация о текущем шаге
+     * @param button1 кнопка 1
+     * @param button2 кнопка 2
+     * @param button3 кнопка 3
+     * @param button4 кнопка 4
+     */
     fun create_edge(stage: Stage, graph_visual: GraphVizualisation, step_information: Label,button1 : Button, button2 : Button, button3 : Button, button4 : Button) {
         if (graph_visual.get_step() == -1) {
             able_disable_buttons(button1,button2,button3,button4,true)
@@ -87,6 +143,12 @@ class GraphEditor() {
         }
     }
 
+    /**
+     * Метод choose_weight() открывает диалоговое окно для ввода веса нового ребра и возвращает введенное значение.
+     * Если поле ввода оставлено пустым или окно закрыто, вес ребра будет равен "0".
+     *
+     * @return введенное пользователем значение веса ребра
+     */
     fun choose_weight(): Int {
         val dialog = TextInputDialog()
         dialog.title = "Ввод веса для нового ребра."
@@ -109,8 +171,16 @@ class GraphEditor() {
         return weight
     }
 
-    fun createLine(startCircle: VertexVizualisation, endCircle: VertexVizualisation,
-                   graph_visual: GraphVizualisation, step_information: Label) {
+    /**
+     * Метод createLine создает новое ребро между двумя заданными вершинами на графической сцене.
+     * Вес ребра запрашивается с помощью метода choose_weight().
+     *
+     * @param startCircle начальная вершина ребра
+     * @param endCircle конечная вершина ребра
+     * @param graph_visual визуализация графа
+     * @param step_information информация о текущем шаге
+     */
+    fun createLine(startCircle: VertexVizualisation, endCircle: VertexVizualisation, graph_visual: GraphVizualisation, step_information: Label) {
         val line = Line()
         line.startX = startCircle.get_circle().centerX
         line.startY = startCircle.get_circle().centerY
@@ -130,6 +200,15 @@ class GraphEditor() {
                 " Редактирование графа доступно только на данном шаге."
     }
 
+    /**
+     * Метод able_disable_buttons позволяет включать или отключать кнопки на графической сцене.
+     *
+     * @param button1 первая кнопка
+     * @param button2 вторая кнопка
+     * @param button3 третья кнопка
+     * @param button4 четвертая кнопка
+     * @param action значение true или false, определяющее, включить или отключить кнопки
+     */
     fun able_disable_buttons(button1 : Button, button2 : Button, button3 : Button, button4 : Button, action : Boolean){
         button1.isDisable = action
         button2.isDisable = action
@@ -137,6 +216,17 @@ class GraphEditor() {
         button4.isDisable = action
     }
 
+    /**
+     * Метод delete_element позволяет пользователю удалить выбранный элемент (вершину или ребро) на графической сцене.
+     *
+     * @param stage сцена, на которой отображается граф
+     * @param graph_visual визуализация графа
+     * @param step_information информация о текущем шаге
+     * @param button1 первая кнопка
+     * @param button2 вторая кнопка
+     * @param button3 третья кнопка
+     * @param button4 четвертая кнопка
+     */
     fun delete_element(stage: Stage,graph_visual: GraphVizualisation, step_information: Label,button1 : Button, button2 : Button, button3 : Button, button4 : Button) {
         if (graph_visual.get_step() == -1){
             able_disable_buttons(button1,button2,button3,button4,true)
@@ -164,11 +254,25 @@ class GraphEditor() {
 
     }
 
+    /**
+     * Метод isInsideCircle проверяет, находятся ли указанные координаты внутри заданного круга.
+     *
+     * @param x координата по оси X
+     * @param y координата по оси Y
+     * @param circle круг для проверки
+     * @return true, если координаты находятся внутри круга, иначе false
+     */
     fun isInsideCircle(x: Double, y: Double, circle: Circle): Boolean {
         val distance = Math.sqrt(Math.pow(x - circle.centerX, 2.0) + Math.pow(y - circle.centerY, 2.0))
         return distance <= circle.radius
     }
 
+    /**
+     * Метод action позволяет пользователю выполнять действия с элементами графа.
+     *
+     * @param stage сцена, на которой отображается граф
+     * @param graph_visual визуализация графа
+     */
     fun action(stage: Stage, graph_visual: GraphVizualisation) {
         stage.scene.setOnMouseClicked { event ->
             if (event.button == MouseButton.PRIMARY && event.clickCount == 2 && graph_visual.get_step() == -1) {
